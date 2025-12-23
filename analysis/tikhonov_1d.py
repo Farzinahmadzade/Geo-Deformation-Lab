@@ -1,4 +1,3 @@
-# analysis/tikhonov_1d.py
 """
 Simple 1‑D Tikhonov smoothing (second‑derivative regularization).
 
