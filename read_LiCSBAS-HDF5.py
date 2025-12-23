@@ -5,6 +5,8 @@ import csv
 from pathlib import Path
 import pandas as pd
 
+from analysis.tikhonov_1d import tikhonov_1d
+
 data_dir = Path(r"K:\GitHub\Geo-Deformation-Lab\Data")
 h5_path = data_dir / "000002_028A_05385_191813_filt.hdf5"
 
@@ -26,15 +28,21 @@ ts = disp[:, iy, ix]
 dates_str = [d.decode() if isinstance(d, bytes) else str(d) for d in dates]
 dates_dt = pd.to_datetime(dates_str, format="%Y%m%d")
 
-# --- plot with datetime on x-axis ---
+# --- Tikhonov smoothing ---
+alpha = 10.0
+ts_smooth = tikhonov_1d(ts, alpha)
+
+# --- plot raw vs smoothed ---
 plt.figure()
-plt.plot(dates_dt, ts, ".-")
+plt.plot(dates_dt, ts, ".-", label="raw")
+plt.plot(dates_dt, ts_smooth, "-", label=f"Tikhonov α={alpha}")
 plt.gcf().autofmt_xdate()
 plt.ylabel("cumulative displacement (mm)")
+plt.legend()
 plt.tight_layout()
 plt.show()
 
-# --- save CSV ---
+# --- save CSV (raw series فعلاً) ---
 out_csv = data_dir / "timeseries_pixel_100_120.csv"
 with open(out_csv, "w", newline="") as fcsv:
     w = csv.writer(fcsv)
