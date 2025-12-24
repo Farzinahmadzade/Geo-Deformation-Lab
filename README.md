@@ -17,13 +17,12 @@ A small research-oriented project for analyzing ground deformation time series f
 
 ## Repository structure
 
-#Geo-Deformation-Lab/
-#├─ Data/
-#│ └─ 000002_028A_05385_191813_filt.hdf5 # Example LiCSBAS file (not tracked)
-#│
-#├─ io/ # For future I/O modules
-#├─ read_LiCSBAS-HDF5.py # Main demo script
-#└─ README.md
+Geo-Deformation-Lab/
+├── Data/
+│   └── 000002_028A_05385_191813_filt.hdf5
+├── io/                   # For future I/O modules
+├── read_LiCSBAS-HDF5.py  # Main demo script
+└── README.md
 
 ### `analysis/tikhonov_1d.py`
 
