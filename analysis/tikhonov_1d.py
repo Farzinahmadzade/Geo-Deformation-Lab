@@ -14,6 +14,7 @@ def second_diff_matrix(n: int) -> np.ndarray:
 
     L x ~= x[i-1] - 2 x[i] + x[i+1]  for interior points.[web:11][web:97]
     """
+    
     if n < 3:
         raise ValueError("Need at least 3 points for 2nd‑order differences.")
 
@@ -41,6 +42,7 @@ def tikhonov_1d(y: np.ndarray, alpha: float) -> np.ndarray:
     x : 1‑D array
         Smoothed time series of length N.
     """
+    
     y = np.asarray(y, dtype=float).ravel()
     n = y.size
 
