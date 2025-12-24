@@ -1,5 +1,4 @@
 import h5py
-import numpy as np
 import matplotlib.pyplot as plt
 import csv
 from pathlib import Path
@@ -42,7 +41,7 @@ plt.legend()
 plt.tight_layout()
 plt.show()
 
-# --- save CSV (raw series فعلاً) ---
+# --- save CSV ---
 out_csv = data_dir / "timeseries_pixel_100_120.csv"
 with open(out_csv, "w", newline="") as fcsv:
     w = csv.writer(fcsv)
