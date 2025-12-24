@@ -20,17 +20,17 @@ A small research-oriented project for analyzing ground deformation time series f
 Geo-Deformation-Lab/
 
 ├── Data/
-
-        └── 000002_028A_05385_191813_filt.hdf5
+│
+│        └── 000002_028A_05385_191813_filt.hdf5
 ├── figures/
-        └── timeseries_raw_pixel-100-120.png
-        └── timeseries_tikhonov_alpha-1_pixel-100-120.png
-        └── timeseries_tikhonov_alpha-10_pixel-100-120.png
-        └── timeseries_tikhonov_alpha-100_pixel-100-120.png
-├── io/                                                     # For future I/O modules
-
-├── read_LiCSBAS-HDF5.py                                    # Main demo script
-
+│        └── timeseries_raw_pixel-100-120.png
+│        └── timeseries_tikhonov_alpha-1_pixel-100-120.png
+│        └── timeseries_tikhonov_alpha-10_pixel-100-120.png
+│        └── timeseries_tikhonov_alpha-100_pixel-100-120.png
+├── io/                                                      # For future I/O modules
+│
+├── read_LiCSBAS-HDF5.py                                     # Main demo script
+│
 └── README.md
 
 ### `analysis/tikhonov_1d.py`
