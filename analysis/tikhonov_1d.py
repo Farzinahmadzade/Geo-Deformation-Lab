@@ -12,7 +12,7 @@ def second_diff_matrix(n: int) -> np.ndarray:
     """
     Build (n-2) x n finite‑difference matrix for the 2nd derivative.
 
-    L x ~= x[i-1] - 2 x[i] + x[i+1]  for interior points.[web:11][web:97]
+    L x ~= x[i-1] - 2 x[i] + x[i+1]  for interior points.
     """
     
     if n < 3:
