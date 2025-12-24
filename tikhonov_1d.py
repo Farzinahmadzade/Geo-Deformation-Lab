@@ -2,7 +2,7 @@
 Simple 1‑D Tikhonov smoothing (second‑derivative regularization).
 
 min_x ||x - y||^2 + alpha ||L x||^2
-where L is the discrete 2nd‑difference operator.[web:90][web:11]
+where L is the discrete 2nd‑difference operator.
 """
 
 import numpy as np
@@ -53,5 +53,5 @@ def tikhonov_1d(y: np.ndarray, alpha: float) -> np.ndarray:
 
     # Solve (I + alpha * L^T L) x = y
     A = I + alpha * (L.T @ L)
-    x = np.linalg.solve(A, y)  # symmetric positive‑definite system[web:8][web:97]
+    x = np.linalg.solve(A, y)
     return x
