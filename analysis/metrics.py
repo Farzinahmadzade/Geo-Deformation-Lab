@@ -1,4 +1,6 @@
 import numpy as np
+import matplotlib.pyplot as plt
+
 from scipy.stats import linregress
 from scipy.signal import welch
 
