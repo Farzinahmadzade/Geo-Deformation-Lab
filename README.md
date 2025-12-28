@@ -84,6 +84,6 @@ Testing advanced models (CNN, Transformer)
 ## Acknowledgments
 - This work is inspired by and builds upon the research of Dr. Abdolreza Safari on gravity field denoising using Tikhonov regularization.
 
-- **Author**: Farzin Ahmadzade
+- Author: **Farzin Ahmadzade**
 
 - **University of Tehran - Faculty of Engineering**
