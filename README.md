@@ -1,163 +1,87 @@
-# Geo-Deformation-Lab
+# Geo-Deformation-Lab 🛰️
 
-A small research-oriented project for analyzing ground deformation time series from LiCSBAS InSAR products using 1‑D Tikhonov regularization (second‑derivative smoothing).
+**Denoising InSAR Time Series Using Tikhonov Regularization and LSTM Autoencoder**  
+**Application to Subsidence Monitoring in Western Tehran Plain**
 
----
+[![Python](https://img.shields.io/badge/Python-3.10+-blue.svg)](https://www.python.org)
+[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Made with Love](https://img.shields.io/badge/Made%20with-❤️-red.svg)](https://github.com)
 
-## Project goals
+## Overview
 
-- Read LiCSBAS HDF5 products (COMET Subsidence Portal / LiCSBAS SBAS output).
-- Extract cumulative displacement time series for selected pixels.
-- Apply 1‑D Tikhonov regularization to smooth noisy InSAR time series while preserving the physical trend.
-- Prepare the code base for future extensions:
-  - space–time regularization in Sobolev subspaces (inspired by GRACE gravity-field filtering),
-  - and AI/ML-based denoising and modeling.
+This repository implements denoising methods for InSAR time series data, inspired by the paper:
 
----
+> Safari, A., Sharifi, M.A., Bagheri, H., Allatavakoli, Y. (2013).  
+> *Time-variable gravity determination from the GRACE gravity solutions filtered by Tikhonov regularization in Sobolev subspace.*  
+> Journal of Earth and Space Physics, 39(2), 51-77.
 
-## Repository structure
+The original paper applies generalized Tikhonov regularization to filter noise in GRACE gravity data. This project adapts the Tikhonov method to InSAR time series and compares it with:
+- Savitzky-Golay filter
+- LSTM Autoencoder (deep learning approach)
+
+The goal is to remove atmospheric and decorrelation noise while preserving physical subsidence signals in the Western Tehran Plain (a region with severe groundwater-induced subsidence).
+
+Results show that the **LSTM Autoencoder** provides adaptive denoising without manual parameter tuning, achieving performance comparable to or better than traditional methods.
+
+## Key Results
+
+### Comparison of Denoising Methods
+![Comparison of Denoising Methods](Data/figures/denoising_comparison.png)
+
+### Power Spectral Density (PSD) Analysis
+![PSD Comparison](Data/figures/psd_comparison.png)
+
+### Quantitative Metrics (Single Pixel)
+
+| Method            | STD (mm) | Variance Reduction (%) | Subsidence Rate (mm/yr) |
+|-------------------|----------|-------------------------|--------------------------|
+| Raw               | ~5.4     | 0                       | ~17–18                   |
+| Tikhonov (α=10)   | ~5.1     | ~11                     | ~17–18                   |
+| Savitzky-Golay    | ~4.3     | ~37                     | ~17–18                   |
+| LSTM Autoencoder  | ~4.4     | ~33                     | ~17–18                   |
+
+> The LSTM Autoencoder achieves excellent high-frequency noise suppression (as seen in PSD) and preserves non-linear deformation events more naturally than traditional filters.
+
+## Project Structure
 
 Geo-Deformation-Lab/
-
 ├── Data/
-│
-│        └── 000002_028A_05385_191813_filt.hdf5
-│
+│   └── 000002_028A_05385_191813_filt.hdf5
 ├── analysis/
-│
-│        └── tikhonov_1d.py
-│
-├── figures/
-│        └── timeseries_raw_pixel-100-120.png
-│        └── timeseries_tikhonov_alpha-1_pixel-100-120.png
-│        └── timeseries_tikhonov_alpha-10_pixel-100-120.png
-│        └── timeseries_tikhonov_alpha-100_pixel-100-120.png
-│
-├── io/                                                      # For future I/O modules
-│
-├── read_LiCSBAS-HDF5.py                                     # Main demo script
-│
+│   ├── tikhonov_1d.py
+│   ├── savitzky_golay.py
+│   ├── lstm_autoencoder.py
+│   └── metrics.py
+├── figures/                  # Generated plots
+├── read_data.py
+├── main_comparison.py        # Run full comparison
+├── demo_lstm.py              # Demo: only LSTM plot
 └── README.md
-
-### `analysis/tikhonov_1d.py`
-
-Implements a simple 1‑D Tikhonov smoother:
-
-- `second_diff_matrix(n)`: builds an \((n-2) \times n\) finite‑difference matrix approximating the second derivative (curvature operator \(L\)).  
-- `tikhonov_1d(y, alpha)`: solves
-  \[
-  \min_x \|x - y\|^2 + \alpha \|Lx\|^2
-  \]
-  via the linear system
-  \[
-  (I + \alpha L^\top L)\,x = y,
-  \]
-  and returns the smoothed time series.
-
-This is a discrete version of classical Tikhonov regularization with a second‑derivative penalty.
-
-### `read_LiCSBAS-HDF5.py`
-
-Demonstration script that:
-
-1. Reads a LiCSBAS HDF5 file:
-   - cumulative displacement `cum` (mm),
-   - velocity `vel` (mm/yr),
-   - acquisition dates `imdates` (YYYYMMDD),
-   - post‑stack grid coordinates `post_lat`, `post_lon`.
-2. Extracts the cumulative displacement time series for a chosen pixel `(iy, ix)`.
-3. Converts `imdates` to Python `datetime` objects using `pandas`.
-4. Applies `tikhonov_1d` for selected values of the regularization parameter `alpha` (e.g. 1, 10, 100).
-5. Plots:
-   - the raw time series,
-   - and the Tikhonov‑smoothed series on the same axes.
-6. Exports the raw time series to CSV (date vs. cumulative displacement).
-
----
 
 ## Requirements
 
-- Python 3.9+
-- Packages:
-  - `numpy`
-  - `h5py`
-  - `pandas`
-  - `matplotlib`
-
-Install with:
-
-```pip install numpy h5py pandas matplotlib```
-
----
-
-## Usage
-
-1. Place a LiCSBAS HDF5 file in the `Data/` directory, e.g.:
-
-```Data/000002_028A_05385_191813_filt.hdf5```
-
-2. Edit the path at the top of `read_LiCSBAS-HDF5.py` if needed:
-
-```
-from pathlib import Path
-
-data_dir = Path(r"K:\GitHub\Geo-Deformation-Lab\Data")
-h5_path = data_dir / "000002_028A_05385_191813_filt.hdf5"
+```bash
+pip install numpy matplotlib scipy pandas h5py torch
 ```
 
+## How to Run
 
-3. Run the script:
+1. Full comparison (table + PSD + all methods):
+```python main_comparison.py```
 
-```python read_LiCSBAS-HDF5.py```
+2. Only LSTM denoising:
+```python demo_lstm.py```
 
-You should see:
+3. Only Savitzky_golay:
+```python demo_savitzky.py```
 
-- a plot of raw cumulative displacement vs. time,
-- a plot with both raw and Tikhonov‑smoothed curves for the chosen `alpha`,
-- and a CSV file such as `timeseries_pixel_100_120.csv` in `Data/`.
+## Future Work
 
----
+Integration with GRACE-FO data for mass balance analysis
+Application to full regional grid
+Testing advanced models (CNN, Transformer)
 
-## Interpretation of the regularization parameter
-
-The regularization parameter `alpha` controls the trade‑off between fidelity to the data and smoothness:
-
-- **Small `alpha` (e.g. 1)**:
-  - The smoothed curve almost follows the raw data.
-  - Only very high‑frequency noise and sharp spikes are reduced.
-- **Moderate `alpha` (e.g. 10)**:
-  - Good compromise: short‑scale noise is suppressed,
-  - main physical features (trend, seasonal patterns, major breaks) are preserved.
-- **Large `alpha` (e.g. 100)**:
-  - Strong smoothing: the long‑term trend is emphasized,
-  - small‑scale variations and short events may be over‑smoothed.
-
-For now the parameter is chosen manually; later this can be automated using L‑curve, cross‑validation, or Bayesian criteria.
-
----
-
-## Current status
-
-- HDF5 I/O for LiCSBAS cumulative displacement time series is working.
-- 1‑D Tikhonov smoothing with a second‑difference penalty is implemented and demonstrated on real InSAR subsidence data.
-- Plots clearly show how different `alpha` values affect the balance between noise reduction and detail preservation.
-
----
-
-## Planned extensions
-
-- Implement automated selection of `alpha` (e.g. L‑curve analysis).
-- Extend the regularization to 2‑D / 3‑D (space–time) using spatial finite‑difference operators on the LiCSBAS grid.
-- Introduce Sobolev‑type norms and connect the implementation more closely to the gravity‑field regularization ideas from GRACE literature.
-- Add region‑based time‑series extraction (spatial averaging over polygons).
-- Use Tikhonov‑smoothed series as “clean labels” for training ML models (autoencoders, RNNs, etc.) for direct InSAR denoising.
-
----
-
-## Acknowledgements / context
-
-This project is inspired by:
-
-- LiCSBAS and COMET’s Sentinel‑1 InSAR products.
-- Classical Tikhonov regularization theory and its applications in geophysics and inverse problems.
-- GRACE time‑variable gravity studies using Tikhonov‑type regularization in Sobolev subspaces.
+## Acknowledgments
+This work is inspired by and builds upon the research of Dr. Abdolreza Safari on gravity field denoising using Tikhonov regularization.
+**Author**: Farzin Ahmadzade
+**University of Tehran - Faculty of Engineering**
