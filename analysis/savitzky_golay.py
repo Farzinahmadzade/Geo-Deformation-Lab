@@ -20,5 +20,5 @@ def savitzky_golay_denoise(ts: np.ndarray, window_length: int = 51, polyorder: i
         Denoised time series
     """
     if window_length % 2 == 0:
-        window_length += 1  # باید فرد باشه
+        window_length += 1
     return savgol_filter(ts, window_length=window_length, polyorder=polyorder)
