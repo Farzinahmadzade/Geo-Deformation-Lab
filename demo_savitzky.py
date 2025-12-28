@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+
 from pathlib import Path
 from read_data import load_timeseries
 from analysis.savitzky_golay import savitzky_golay_denoise
