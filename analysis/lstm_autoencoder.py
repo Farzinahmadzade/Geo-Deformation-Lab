@@ -2,6 +2,7 @@ import numpy as np
 import torch
 import torch.nn as nn
 import torch.optim as optim
+
 from torch.utils.data import DataLoader, TensorDataset
 
 def lstm_denoise(ts_raw: np.ndarray, 
@@ -36,6 +37,7 @@ def lstm_denoise(ts_raw: np.ndarray,
     np.ndarray
         Denoised time series (same length as input)
     """
+
     # Reproducibility
     np.random.seed(seed)
     torch.manual_seed(seed)
