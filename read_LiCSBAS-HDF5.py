@@ -1,9 +1,9 @@
 import h5py
 import matplotlib.pyplot as plt
 import csv
-from pathlib import Path
 import pandas as pd
 
+from pathlib import Path
 from analysis.tikhonov_1d import tikhonov_1d
 
 data_dir = Path(r"K:\GitHub\Geo-Deformation-Lab\Data")
